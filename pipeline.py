@@ -3,7 +3,17 @@ import json
 from collections import namedtuple
 
 PreferenceMatch = namedtuple("PreferenceMatch", ["product_name", "product_codes"])
-
+availablility = {
+    "A21313": 4,
+    "A21312": 5,
+    "A21455": 0,
+    "A21317": 7,
+    "A21319": 9,
+    "A21412": 0,
+    "A21501": 0,
+    "A21502": 0,
+    "A21311": 1
+}
 
 def main(product_data, include_tags, exclude_tags):
     """The implementation of the pipeline test."""
@@ -11,17 +21,17 @@ def main(product_data, include_tags, exclude_tags):
     matching_products = {}
 
     for product in product_data:
-
         # Check the include and exclude tags.
-        if any(tag in product["tags"] for tag in include_tags) and not any(tag in product["tags"] for tag in exclude_tags):
+        if product["code"] in availablility and availablility[product["code"]] > 0:
+            if any(tag in product["tags"] for tag in include_tags) and not any(tag in product["tags"] for tag in exclude_tags):
             
-            # Check if the product name already exists in the dictionary.
-            # If it does not exist, initialize new entry. Inside will be a list with the product code.
-            # If it exists, append the product code to the list under the product name.
-            if product["name"] not in matching_products:
-                matching_products[product["name"]] = [product["code"]]
-            else:
-                matching_products[product["name"]].append(product["code"])
+                # Check if the product name already exists in the dictionary.
+                # If it does not exist, initialize new entry. Inside will be a list with the product code.
+                # If it exists, append the product code to the list under the product name.
+                if product["name"] not in matching_products:
+                    matching_products[product["name"]] = [product["code"]]
+                else:
+                    matching_products[product["name"]].append(product["code"])
 
     # Convert matching_products dictionary into a list of PreferenceMatch.
     # Get items in dictionary and convert to key value pairs, name(key) and codes(value).
